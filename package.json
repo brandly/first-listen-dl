@@ -1,0 +1,26 @@
+{
+  "name": "first-listen-dl",
+  "version": "0.0.1",
+  "description": "Download mp3s from NPR First Listen",
+  "main": "index.js",
+  "dependencies": {
+    "cheerio": "^0.19.0",
+    "lodash": "^3.10.0",
+    "meow": "^3.3.0",
+    "request": "^2.58.0"
+  },
+  "author": "Matthew Brandly <brandly13@gmail.com> (http://brandly.me/)",
+  "license": "MIT",
+  "bin": {
+    "first-listen-dl": "cli.js"
+  },
+  "preferGlobal": true,
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "repository": "brandly/first-listen-dl",
+  "files": [
+    "index.js",
+    "cli.js"
+  ]
+}
