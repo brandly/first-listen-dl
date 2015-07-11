@@ -1,8 +1,11 @@
 var fs = require('fs');
 var path = require('path');
-var request = require('request');
+var async = require('async');
 var cheerio = require('cheerio');
 var _ = require('lodash');
+var ProgressBar = require('progress');
+var ProgressStream = require('progress-stream');
+var request = require('request');
 
 // TODO: figure out how to get this dynamically
 var apiKey = 'MDAzMzQ2MjAyMDEyMzk4MTU1MDg3ZmM3MQ010';
@@ -12,6 +15,7 @@ module.exports = function (opts) {
     throw 'Must pass the URL of an NPR First Listen';
   }
   opts.dest || (opts.dest = './');
+  var startTime = Date.now();
 
   console.log('Downloading webpage');
   nprRequest({
@@ -38,11 +42,33 @@ module.exports = function (opts) {
       return notFullAlbumMp3(song.url);
     });
 
-    songs.forEach(function (song) {
-      console.log('Downloading', song.title);
-      var fileName = twoDigits(song.track) + ' - ' + song.title;
-      var out = fs.createWriteStream(path.resolve(opts.dest, fileName + '.mp3'));
-      request(song.url).pipe(out);
+    var songDownloaders = songs.map(function (song) {
+      return function (finished) {
+        var bar; // Can't initialize until we know size of file
+        var checkProgress = ProgressStream({ time: 100 });
+        checkProgress.on('progress', function (progress) {
+          bar.tick(progress.delta);
+        });
+
+        var fileName = twoDigits(song.track) + ' - ' + song.title;
+        var out = fs.createWriteStream(path.resolve(opts.dest, fileName + '.mp3'));
+
+        console.log(' ' + fileName);
+        request(song.url)
+          .on('response', function (res) {
+            var totalLength = res.headers['content-length'];
+            bar = newProgressBar(totalLength);
+            checkProgress.setLength(totalLength);
+          })
+          .pipe(checkProgress)
+          .on('end', finished)
+          .pipe(out);
+      }
+    });
+
+    async.series(songDownloaders, function () {
+      var totalTime = (Date.now() - startTime) / 1000;
+      console.log('Finished in ' + Math.round(totalTime) + ' seconds');
     });
   });
 };
@@ -82,4 +108,12 @@ function twoDigits(val) {
   } else {
     return val;
   }
+}
+
+function newProgressBar(total) {
+  return new ProgressBar('[:bar] :percent done, :etas left', {
+    total: parseInt(total, 10),
+    width: 40,
+    clear: true
+  });
 }
