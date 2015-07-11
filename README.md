@@ -6,6 +6,16 @@ i made this because the NPR flash player thing is troublesome. they have it open
 
 ### usage
 
+you need eyeD3 installed on your system, in order to properly tag the mp3s with track info
+
+```shell
+# Mac
+$ brew install eyeD3
+
+# Linux
+$ sudo apt-get --assume-yes install eyeD3
+```
+
 ```shell
 $ npm install -g first-listen-dl
 $ first-listen-dl http://www.npr.org/2015/07/08/420581193/first-listen-ratatat-magnifique
