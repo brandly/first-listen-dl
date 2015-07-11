@@ -11,7 +11,7 @@ module.exports = function (opts) {
   if (!opts || !opts.url) {
     throw 'Must pass the URL of an NPR First Listen';
   }
-  opts.dest || (opts.dest = __dirname);
+  opts.dest || (opts.dest = './');
 
   console.log('Downloading webpage');
   nprRequest({
