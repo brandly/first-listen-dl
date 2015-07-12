@@ -74,8 +74,6 @@ module.exports = function (opts) {
               bar.tick(progress.delta);
             });
 
-            var out = fs.createWriteStream(path.resolve(opts.dest, tmpSongDest));
-
             console.log(' ' + getFileName(song));
             request(song.url)
               .on('response', function (res) {
@@ -85,7 +83,7 @@ module.exports = function (opts) {
               })
               .pipe(checkProgress)
               .on('end', finished)
-              .pipe(out);
+              .pipe(fs.createWriteStream(tmpSongDest));
           },
           function (finished) {
             writeId3({

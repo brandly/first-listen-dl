@@ -2,6 +2,8 @@
 
 > Download mp3s from NPR First Listen
 
+![terrible gif](http://i.imgur.com/5YCCzEF.gif)
+
 i made this because the NPR flash player thing is troublesome. they have it open in a new, small window, and then i lose it
 
 ### usage
