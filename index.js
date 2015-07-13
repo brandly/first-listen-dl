@@ -55,7 +55,7 @@ module.exports = function (opts) {
 
     var tmpPrefix = startTime + '-';
     function getTmpDest(song) {
-      return path.join('/tmp', tmpPrefix + getFileName(song) + '.mp3');
+      return path.join('/tmp', tmpPrefix + song.track + '.mp3');
     }
 
     // Last tag is the entire album as a single .mp3 and I don't want it
