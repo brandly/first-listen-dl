@@ -46,7 +46,7 @@ module.exports = function (opts) {
     }
 
     function getFileName(song) {
-      return twoDigits(song.track) + ' - ' + song.title ;
+      return twoDigits(song.track) + ' - ' + replaceSlashes(song.title);
     }
 
     function getFinalDest(song) {
@@ -173,4 +173,8 @@ function writeId3(opts, finished) {
         finished();
       }
     });
+}
+
+function replaceSlashes(str) {
+  return str.replace(/\//g, '_');
 }
