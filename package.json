@@ -1,6 +1,6 @@
 {
   "name": "first-listen-dl",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Download mp3s from NPR First Listen",
   "main": "index.js",
   "dependencies": {
