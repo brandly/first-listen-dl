@@ -18,8 +18,40 @@ module.exports = function (opts) {
   opts.dest || (opts.dest = './');
   var startTime = Date.now();
 
+  downloadArtwork(opts, function (artworkPath) {
+    opts.artwork = artworkPath;
+
+    downloadAlbum(opts, function () {
+      var totalTime = (Date.now() - startTime) / 1000;
+      console.log('Finished in ' + Math.round(totalTime) + ' seconds');
+    });
+  });
+}
+
+function downloadArtwork(opts, callback) {
   console.log('Downloading webpage');
-  nprRequest({
+  request(opts.url, function (e, r, body) {
+    if (e) {
+      console.error('Failed to download given URL');
+      throw e;
+    }
+
+    var $ = cheerio.load(body);
+    var artworkUrl = $('.playlistwrap img')[0].attribs.src;
+
+    var splitUrl = artworkUrl.split('/');
+    var artworkPath = path.join('/tmp', _.last(splitUrl));
+
+    console.log('Downloading album artwork');
+    request(artworkUrl)
+      .on('end', function () { callback(artworkPath) })
+      .pipe(fs.createWriteStream(artworkPath));
+  })
+}
+
+function downloadAlbum(opts, callback) {
+  console.log('Requesting data from NPR');
+  nprApiRequest({
     id: getIdFromUrl(opts.url),
     apiKey: apiKey
   }, function (e, r, body) {
@@ -53,7 +85,7 @@ module.exports = function (opts) {
       return path.resolve(opts.dest, getFileName(song) + '.mp3');
     }
 
-    var tmpPrefix = startTime + '-';
+    var tmpPrefix = Date.now() + '-';
     function getTmpDest(song) {
       return path.join('/tmp', tmpPrefix + song.track + '.mp3');
     }
@@ -88,7 +120,8 @@ module.exports = function (opts) {
           function (finished) {
             writeId3({
               song: song,
-              dest: tmpSongDest
+              dest: tmpSongDest,
+              artwork: opts.artwork
             }, finished);
           },
           function moveSongFile(finished) {
@@ -99,13 +132,12 @@ module.exports = function (opts) {
     });
 
     async.series(songDownloaders, function () {
-      var totalTime = (Date.now() - startTime) / 1000;
-      console.log('Finished in ' + Math.round(totalTime) + ' seconds');
+      fs.unlink(opts.artworkPath, callback);
     });
   });
 };
 
-function nprRequest(opts, callback) {
+function nprApiRequest(opts, callback) {
   request({
     url: 'http://api.npr.org/query',
     method: 'GET',
@@ -153,13 +185,14 @@ var NO_ADAPTERS_ERROR = 'Error: No available write adapters found';
 function writeId3(opts, finished) {
   var writer = new id3.Writer();
   var song = opts.song;
+  var coverImage = (opts.artwork) ? [new id3.Image(opts.artwork)] : null;
 
   var meta = new id3.Meta({
     track: song.track,
     title: song.title,
     artist: song.artist,
     album: song.album
-  });
+  }, coverImage);
 
   writer
     .setFile(new id3.File(opts.dest))
