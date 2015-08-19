@@ -132,7 +132,7 @@ function downloadAlbum(opts, callback) {
     });
 
     async.series(songDownloaders, function () {
-      fs.unlink(opts.artworkPath, callback);
+      fs.unlink(opts.artwork, callback);
     });
   });
 };
