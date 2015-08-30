@@ -1,6 +1,6 @@
 {
   "name": "first-listen-dl",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Download mp3s from NPR First Listen",
   "main": "index.js",
   "dependencies": {
@@ -26,6 +26,8 @@
   "repository": "brandly/first-listen-dl",
   "files": [
     "index.js",
-    "cli.js"
+    "cli.js",
+    "list.js",
+    "download.js"
   ]
 }
