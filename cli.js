@@ -7,9 +7,11 @@ var meow = require('meow');
 var cli = meow({
   help: [
     'Usage',
+    '  first-listen-dl list',
     '  first-listen-dl <url>',
     '',
     'Example',
+    '  first-listen-dl list',
     '  first-listen-dl http://www.npr.org/2015/07/08/420581193/first-listen-ratatat-magnifique --path ~/Music',
     '',
     'Options',
@@ -22,7 +24,11 @@ if (!cli.input[0]) {
   process.exit(1);
 }
 
-firstListen({
-  url: cli.input[0],
-  dest: cli.flags.path
-});
+if (cli.input[0] === 'list') {
+  firstListen.list()
+} else {
+  firstListen.download({
+    url: cli.input[0],
+    dest: cli.flags.path
+  });
+}
