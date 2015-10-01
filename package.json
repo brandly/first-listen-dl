@@ -1,6 +1,6 @@
 {
   "name": "first-listen-dl",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Download mp3s from NPR First Listen",
   "main": "index.js",
   "dependencies": {
@@ -10,6 +10,7 @@
     "id3-writer": "^1.2.2",
     "lodash": "^3.10.0",
     "meow": "^3.3.0",
+    "os-tmpdir": "^1.0.1",
     "progress": "^1.1.8",
     "progress-stream": "^1.1.1",
     "request": "^2.58.0"

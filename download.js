@@ -1,9 +1,10 @@
 var fs = require('fs');
 var path = require('path');
+var api = require('first-listen-api');
 var async = require('async');
 var cheerio = require('cheerio');
-var api = require('first-listen-api');
 var id3 = require('id3-writer');
+var osTmpdir = require('os-tmpdir');
 var ProgressBar = require('progress');
 var ProgressStream = require('progress-stream');
 var request = require('request');
@@ -37,7 +38,7 @@ function downloadArtwork(opts, callback) {
     }
 
     var splitUrl = artworkUrl.split('/');
-    var artworkPath = path.join('/tmp', _.last(splitUrl));
+    var artworkPath = path.join(osTmpdir(), _.last(splitUrl));
 
     console.log('Downloading album artwork');
     request(artworkUrl)
@@ -67,7 +68,7 @@ function downloadAlbum(opts, callback) {
 
     var tmpPrefix = Date.now() + '-';
     function getTmpDest(song) {
-      return path.join('/tmp', tmpPrefix + song.track + '.mp3');
+      return path.join(osTmpdir(), tmpPrefix + song.track + '.mp3');
     }
 
     var songDownloaders = songs.map(function (song) {
