@@ -6,6 +6,10 @@
 
 i made this because the NPR flash player thing is troublesome. they have it open in a new, small window, and then i lose it
 
+## :warning: :skull: DEPRECATED
+
+this no longer works since the underlying [`first-listen-api`](https://github.com/brandly/first-listen-api#warning-skull-deprecated) has been deprecated. fixing that repo should bring this one back from the dead.
+
 ### usage
 
 you need eyeD3 installed on your system, in order to properly tag the mp3s with track info
